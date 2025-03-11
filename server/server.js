@@ -73,15 +73,15 @@ app.get("/auth/github", (req, res) => {
 app.get(
   "/auth/github/callback",
   passport.authenticate("github", {
-    failureRedirect: "http://localhost:5173/",
+    failureRedirect: "https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app/",
   }),
   (req, res) => {
     if (req.user && req.user.githubId) {
       res.redirect(
-        `http://localhost:5173/dashboard?githubId=${req.user.githubId}`
+        `https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app?githubId=${req.user.githubId}`
       );
     } else {
-      res.redirect("http://localhost:5173/dashboard");
+      res.redirect("https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app/dashboard");
     }
   }
 );
