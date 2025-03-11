@@ -3,10 +3,7 @@ import Dashboard from "./dashboard.jsx";
 import Mainpage from "./mainpage.jsx";
 
 function App() {
-  function fun() {
-    window.location.href =
-      "https://pr-reviewer-backend.onrender.com/auth/github";
-  }
+  
 
   return (
     <div className="bg-red-500 min-h-screen">
