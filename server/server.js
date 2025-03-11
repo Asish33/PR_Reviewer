@@ -6,6 +6,8 @@ const dotenv = require("dotenv");
 const WebSocket = require("ws");
 const giveContent = require("./gemini.js");
 const prisma = require("./prismaClient.js");
+const axios = require("axios");
+const nodemailer = require("nodemailer");
 
 dotenv.config();
 
@@ -103,26 +105,26 @@ app.post("/webhook", async (req, res) => {
       return res.status(400).send("Invalid webhook payload");
     }
 
-    const repoName = repository.full_name; // e.g., "user123/my-repo"
-    const owner = repository.owner.login; // e.g., "user123"
-    const senderName = sender.login; // e.g., "user123"
+    const repoName = repository.full_name; 
+    const owner = repository.owner.login; 
+    const senderName = sender.login; 
 
     console.log(`Webhook received from ${repoName}, triggered by ${senderName}`);
+
+
 
     const input = JSON.stringify(req.body);
     const response = await giveContent(input);
 
-    // Store webhook data in Prisma
     const webhookEntry = await prisma.webhookData.create({
       data: {
         content: response,
-        githubId: String(sender.id), // Fix here
-        repoName, // Store the repository name
-        owner, // Store the repository owner
+        githubId: String(sender.id),
+        repoName, 
+        owner, 
       },
     });
-
-    // Send updates to WebSocket clients
+  
     wss.clients.forEach((client) => {
       if (
         client.readyState === WebSocket.OPEN &&
@@ -143,6 +145,22 @@ app.post("/webhook", async (req, res) => {
     console.error("Error handling webhook:", error);
     res.status(500).send("Internal Server Error");
   }
+
+  const user = await prisma.user.findUnique({
+    where: { githubId: String(sender.id) },
+  });
+
+  const emailResponse = await axios.get("https://api.github.com/user/emails", {
+    headers: { Authorization: `Bearer ${user.accessToken}` },
+  });
+  const primaryEmail = emailResponse.data.find((email) => email.primary)?.email;
+  await sendEmail(
+    primaryEmail,
+    `GitHub Webhook Triggered for ${repoName}`,
+    `Hello ${senderName},\n\nA webhook was triggered for your repository: ${repoName}.`
+  );
+
+
 });
 
     wss.clients.forEach((client) => {
@@ -153,7 +171,7 @@ app.post("/webhook", async (req, res) => {
         client.send(
           JSON.stringify({
             githubId: sender.id,
-            repoName, // Send repo name to the client
+            repoName, 
             content: response,
           })
         );
