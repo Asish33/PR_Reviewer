@@ -73,15 +73,15 @@ app.get("/auth/github", (req, res) => {
 app.get(
   "/auth/github/callback",
   passport.authenticate("github", {
-    failureRedirect: "https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app/",
+    failureRedirect: "https://githubmonitor.vercel.app/",
   }),
   (req, res) => {
     if (req.user && req.user.githubId) {
       res.redirect(
-        `https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app/dashboard?githubId=${req.user.githubId}`
+        `https://githubmonitor.vercel.app/dashboard?githubId=${req.user.githubId}`
       );
     } else {
-      res.redirect("https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app/");
+      res.redirect("https://githubmonitor.vercel.app/");
     }
   }
 );
