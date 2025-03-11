@@ -78,10 +78,10 @@ app.get(
   (req, res) => {
     if (req.user && req.user.githubId) {
       res.redirect(
-        `https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app?githubId=${req.user.githubId}`
+        `https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app/dashboard?githubId=${req.user.githubId}`
       );
     } else {
-      res.redirect("https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app/dashboard");
+      res.redirect("https://githubrepomonitor-bzz2p5qow-asishs-projects-54aa708f.vercel.app/");
     }
   }
 );
