@@ -128,11 +128,11 @@ app.post("/webhook", async (req, res) => {
     wss.clients.forEach((client) => {
       if (
         client.readyState === WebSocket.OPEN &&
-        client.githubId === String(sender.id) 
+        client.githubId === String(req.body.sender.id) 
       ) {
         client.send(
           JSON.stringify({
-            githubId: sender.id,
+            githubId: req.body.sender.id,
             repoName, 
             content: response,
           })
@@ -147,7 +147,7 @@ app.post("/webhook", async (req, res) => {
   }
 
   const user = await prisma.user.findUnique({
-    where: { githubId: String(sender.id) },
+    where: { githubId: String(req.body.sender.id) },
   });
 
   const emailResponse = await axios.get("https://api.github.com/user/emails", {
