@@ -150,17 +150,6 @@ app.post("/webhook", async (req, res) => {
     where: { githubId: String(req.body.sender.id) },
   });
 
-  const emailResponse = await axios.get("https://api.github.com/user/emails", {
-    headers: { Authorization: `Bearer ${user.accessToken}` },
-  });
-  const primaryEmail = emailResponse.data.find((email) => email.primary)?.email;
-  await sendEmail(
-    primaryEmail,
-    `GitHub Webhook Triggered for ${repoName}`,
-    `Hello ${senderName},\n\nA webhook was triggered for your repository: ${repoName}.`
-  );
-
-
 });
 
     wss.clients.forEach((client) => {
