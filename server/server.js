@@ -100,7 +100,7 @@ app.get("/logout", async (req, res, next) => {
 app.post("/webhook", async (req, res) => {
   try {
     const { sender, repository } = req.body;
-
+    console.log(req.body);
     if (!sender || !repository) {
       return res.status(400).send("Invalid webhook payload");
     }
@@ -119,7 +119,7 @@ app.post("/webhook", async (req, res) => {
     const webhookEntry = await prisma.webhookData.create({
       data: {
         content: response,
-        githubId: String(sender.id),
+        githubId: String(req.body.sender.id),
         repoName, 
         owner, 
       },
