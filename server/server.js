@@ -166,11 +166,11 @@ app.post("/webhook", async (req, res) => {
     wss.clients.forEach((client) => {
       if (
         client.readyState === WebSocket.OPEN &&
-        client.githubId === sender.id
+        client.githubId === req.body.sender.id
       ) {
         client.send(
           JSON.stringify({
-            githubId: sender.id,
+            githubId: req.body.sender.id,
             repoName, 
             content: response,
           })
